@@ -1,0 +1,122 @@
+{
+  "name": "액션 템플릿",
+  "description": "다이나믹한 액션 장면 프리셋",
+  "technicalSpecs": {
+    "shootingFormat": "실사",
+    "camera": "RED Komodo 6K",
+    "lens": "24mm 광각",
+    "technique": "핸드헬드",
+    "filmTone": "RED IPP2",
+    "colorGrading": "high contrast, deep shadows",
+    "specialEffects": "motion blur, 빠른 프레임 전환",
+    "lightSource": "강렬한 인공 조명",
+    "timeOfDay": "밤",
+    "primaryColor": "빨강-주황 (긴장감)",
+    "secondaryColor": "파랑-청록 (차가움)"
+  },
+  "environment": {
+    "location": "외부, 산업 지구",
+    "terrain": "콘크리트 건물, 철골 구조물",
+    "weather": "비 내림",
+    "time": "깊은 밤",
+    "features": "네온 조명, 젖은 아스팔트",
+    "mood": "긴박하고 위험한"
+  },
+  "character": {
+    "description": "액션 히어로",
+    "role": "전투원",
+    "costume": {
+      "head": "전술 헤드셋",
+      "top": "전술 베스트, 검은색 타이트한 상의",
+      "accessories": "전술 장비, 무기",
+      "bottom": "전술 바지",
+      "shoes": "전투화"
+    }
+  },
+  "scenes": {
+    "overview": {
+      "duration": "20초",
+      "startingSituation": "긴박한 추격 장면",
+      "cameraMovement": "빠르고 역동적인 움직임"
+    },
+    "shots": [
+      {
+        "timecode": "0-5초",
+        "type": "Wide Shot",
+        "angle": "Low Angle",
+        "movement": "Rapid Pan",
+        "composition": "Dynamic",
+        "action": "캐릭터가 빠르게 달림",
+        "visualDetails": "비에 젖은 거리, 네온 반사",
+        "mood": "긴박함"
+      },
+      {
+        "timecode": "5-10초",
+        "type": "Medium Shot",
+        "angle": "Dutch Angle",
+        "movement": "Handheld Tracking",
+        "composition": "불안정한 구도",
+        "action": "캐릭터의 전투 동작",
+        "visualDetails": "빗물 튀김, 빠른 움직임",
+        "mood": "위험, 긴장"
+      },
+      {
+        "timecode": "10-15초",
+        "type": "Close-up",
+        "angle": "Eye Level",
+        "movement": "Quick Zoom",
+        "composition": "중앙",
+        "action": "결정적 순간의 표정",
+        "visualDetails": "땀과 빗물, 강렬한 눈빛",
+        "mood": "결연함"
+      },
+      {
+        "timecode": "15-20초",
+        "type": "Extreme Wide Shot",
+        "angle": "High Angle",
+        "movement": "Crane Down",
+        "composition": "전체 장면",
+        "action": "액션의 클라이막스",
+        "visualDetails": "폭발, 불꽃, 비",
+        "mood": "압도적"
+      }
+    ]
+  },
+  "sound": {
+    "ambient": [
+      "빗소리",
+      "천둥 소리",
+      "먼 사이렌"
+    ],
+    "character": [
+      "거친 호흡",
+      "발걸음 소리 (물 튀기는 소리)",
+      "전투 사운드"
+    ],
+    "mechanical": [
+      "무기 소리",
+      "금속 부딪히는 소리"
+    ],
+    "music": "강렬한 오케스트라, 전자음 믹스"
+  },
+  "dialogue": {
+    "lines": []
+  },
+  "specialInstructions": {
+    "must": [
+      "빠른 편집 리듬",
+      "높은 대비와 채도",
+      "역동적인 카메라 움직임"
+    ],
+    "emphasize": [
+      "액션의 임팩트",
+      "캐릭터의 긴장감",
+      "환경의 위험한 분위기"
+    ],
+    "avoid": [
+      "정적인 샷",
+      "밝고 편안한 색감",
+      "느린 템포"
+    ]
+  }
+}

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영상 프롬프트 생성기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <!-- 스토리 입력 섹션 -->
+            <div class="story-container">
+                <h2>스토리 작성</h2>
+                <p class="story-description">원하는 영상의 스토리를 자유롭게 작성하세요. AI가 자동으로 각 항목을 채워드립니다.</p>
+                <div class="story-input-group">
+                    <textarea id="storyInput" placeholder="예시: 황량한 사막 한가운데, 오렌지색 구조복을 입은 남자가 거대한 모래폭풍 속을 걷고 있다. 그의 헬멧 바이저는 먼지로 흐려져 있고, 배낭에는 낡은 장비들이 달려있다. 석양이 모래 언덕을 황금빛으로 물들이고, 바람이 그의 옷을 세차게 흔든다. 그는 멀리 사라진 무언가를 찾아 계속 전진한다..." rows="8"></textarea>
+                    <div class="story-actions">
+                        <button type="button" class="btn-primary" onclick="analyzeStory()">AI로 자동 분석 및 적용</button>
+                        <button type="button" class="btn-secondary" onclick="clearStory()">스토리 지우기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 프롬프트 입력 폼 -->
+            <div class="form-container">
+                <form id="promptForm">
+                    <!-- 1. 기술 사양 -->
+                    <section class="form-section">
+                        <h3>1. 기술 사양</h3>
+                        
+                        <!-- 촬영 컨셉 프리셋 선택 -->
+                        <div class="form-group full-width">
+                            <label for="shootingConcept">촬영 컨셉 프리셋 (선택 시 자동 적용)</label>
+                            <select id="shootingConcept" name="shootingConcept" onchange="applyConceptPreset(this.value)">
+                                <option value="">직접 입력</option>
+                                <optgroup label="인물 촬영">
+                                    <option value="portrait">인물 사진 (f/2.8, 1/125s, ISO 400)</option>
+                                    <option value="child">아동 사진 (f/3.5, 1/250s, ISO 200)</option>
+                                </optgroup>
+                                <optgroup label="풍경 & 자연">
+                                    <option value="landscape">풍경 사진 (f/11, 1/30s, ISO 100)</option>
+                                    <option value="nature">고요한 자연 (f/11, 1/125s, ISO 400)</option>
+                                </optgroup>
+                                <optgroup label="도시 & 스트리트">
+                                    <option value="street">스트리트 포토 (f/2.8, 1/500s, ISO 800)</option>
+                                    <option value="night">야경 사진 (f/11, 15s, ISO 800)</option>
+                                </optgroup>
+                                <optgroup label="전문 촬영">
+                                    <option value="macro">매크로 사진 (f/4, 1/2000s, ISO 200)</option>
+                                    <option value="food">식품 사진 (f/6.3, 1/200s, ISO 100)</option>
+                                    <option value="sports">스포츠 사진 (f/3.5, 1/1000s, ISO 1600)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="shootingFormat">촬영 형식</label>
+                                <select id="shootingFormat" name="shootingFormat">
+                                    <option value="실사">실사</option>
+                                    <option value="애니메이션">애니메이션</option>
+                                    <option value="하이브리드">하이브리드</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="camera">카메라 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                <select id="camera" name="camera">
+                                    <option value="">직접 입력</option>
+                                    <optgroup label="인물 촬영">
+                                        <option value="Sony Alpha 7 III" title="균형잡힌 만능 인물 카메라, 뛰어난 저조도 성능, 아이 AF">Sony Alpha 7 III</option>
+                                        <option value="Canon EOS 5D Mark IV" title="웨딩/상업 인물 최고, 정확한 피부톤, 신뢰성">Canon EOS 5D Mark IV</option>
+                                        <option value="Leica M10" title="스트리트 인물, 조용한 셔터, 클래식한 감성">Leica M10</option>
+                                        <option value="Leica M6" title="아날로그 명품, 정밀한 수동 조작, 필름 인물">Leica M6</option>
+                                        <option value="Hasselblad 500C/M" title="스튜디오 인물 최고급, 6x6 중형 필름">Hasselblad 500C/M</option>
+                                    </optgroup>
+                                    <optgroup label="풍경 촬영">
+                                        <option value="Nikon D850" title="최고 해상도 4500만화소, 디테일 극대화">Nikon D850</option>
+                                        <option value="Sony Alpha 7R IV" title="6100만화소, 초고해상도 풍경 전문">Sony Alpha 7R IV</option>
+                                        <option value="Pentax 67" title="풍경의 왕, 6x7 대형 네거티브, 압도적 디테일">Pentax 67</option>
+                                        <option value="Hasselblad X-Pan" title="파노라마 전문, 독특한 와이드 화면비">Hasselblad X-Pan</option>
+                                    </optgroup>
+                                    <optgroup label="스포츠/액션">
+                                        <option value="Canon EOS 90D" title="빠른 연사 10fps, 망원 효과, 동물/스포츠">Canon EOS 90D</option>
+                                        <option value="Nikon D6" title="프로 스포츠 전용, 최고 AF 성능">Nikon D6</option>
+                                        <option value="Canon EOS-1D X Mark III" title="올림픽 공식, 20fps 초고속 연사">Canon EOS-1D X Mark III</option>
+                                        <option value="Canon EOS-1V" title="필름 스포츠, 빠른 AF, 10fps 연사">Canon EOS-1V</option>
+                                    </optgroup>
+                                    <optgroup label="스트리트/스냅">
+                                        <option value="Fujifilm X100V" title="고정 렌즈 23mm, 휴대성 최고, 일상 스냅">Fujifilm X100V</option>
+                                        <option value="Contax G2" title="고급 컴팩트, 칼자이스 렌즈, 필름 스냅">Contax G2</option>
+                                        <option value="Olympus Trip 35" title="경량 필름 컴팩트, 여행/스트리트">Olympus Trip 35</option>
+                                    </optgroup>
+                                    <optgroup label="브이로그/영상">
+                                        <option value="Sony Alpha 6400" title="유튜브/브이로그, 플립스크린, 실시간 AF">Sony Alpha 6400</option>
+                                        <option value="Canon EOS 6D Mark II" title="입문 풀프레임, 가벼운 무게, 여행 영상">Canon EOS 6D Mark II</option>
+                                    </optgroup>
+                                    <optgroup label="스튜디오/상업">
+                                        <option value="Mamiya RZ67" title="스튜디오 전문, 틸트/시프트, 상업 촬영">Mamiya RZ67</option>
+                                        <option value="Hasselblad 500C/M" title="달 착륙 카메라, 정사각형 6x6, 최고 품질">Hasselblad 500C/M</option>
+                                        <option value="Nikon D850" title="고해상도 스튜디오, 상업 사진">Nikon D850</option>
+                                    </optgroup>
+                                    <optgroup label="영화/시네마">
+                                        <option value="ARRI ALEXA 65" title="할리우드 블록버스터, 극장용 최고급">ARRI ALEXA 65</option>
+                                        <option value="ARRI ALEXA Mini" title="현장 촬영, 컴팩트 시네마, 짐벌/크레인">ARRI ALEXA Mini</option>
+                                        <option value="RED Komodo 6K" title="다이나믹 액션, 소형 시네마, 고속촬영">RED Komodo 6K</option>
+                                        <option value="Sony FX6" title="다큐/현장, 저조도 성능, 컴팩트 시네마">Sony FX6</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="lens">렌즈 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                <select id="lens" name="lens">
+                                    <option value="">직접 입력</option>
+                                    <optgroup label="단렌즈">
+                                        <option value="14mm" title="극단적 왜곡, 창의적 구도, 건축/실내">14mm</option>
+                                        <option value="24mm" title="넓은 시야, 풍경/여행, 원근감 강조">24mm</option>
+                                        <option value="35mm" title="스트리트 황금비율, 자연스러운 시야">35mm</option>
+                                        <option value="50mm" title="인간 눈과 유사, 만능 렌즈, 입문자 추천">50mm</option>
+                                        <option value="85mm" title="인물 최적, 압축 효과, 아름다운 보케">85mm</option>
+                                        <option value="100mm" title="매크로/인물, 배경 분리 극대화">100mm</option>
+                                        <option value="135mm" title="압축미 극대화, 감성 인물, 배경 크림">135mm</option>
+                                        <option value="200mm" title="야생동물/스포츠, 먼 거리 촬영">200mm</option>
+                                    </optgroup>
+                                    <optgroup label="줌렌즈">
+                                        <option value="14-24mm" title="풍경/건축 전문, 왜곡 최소화">14-24mm</option>
+                                        <option value="16-35mm" title="여행/다큐멘터리, 넓은 화각">16-35mm</option>
+                                        <option value="24-70mm" title="만능 줌, 결혼식/이벤트 필수">24-70mm</option>
+                                        <option value="70-200mm" title="스포츠/야생, 프로 필수 3대 렌즈">70-200mm</option>
+                                        <option value="100-400mm" title="야생동물/비행기, 극한 망원">100-400mm</option>
+                                    </optgroup>
+                                    <optgroup label="특수렌즈">
+                                        <option value="어안렌즈 8mm" title="180도 시야, 극단적 왜곡, 창의적">어안렌즈 8mm</option>
+                                        <option value="틸트시프트" title="미니어처 효과, 건축 왜곡 보정">틸트시프트</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="technique">촬영 기법 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                <select id="technique" name="technique">
+                                    <option value="">직접 입력</option>
+                                    <optgroup label="안정적 움직임">
+                                        <option value="고정 샷" title="삼각대 고정, 정적인 구도, 인터뷰/제품">고정 샷</option>
+                                        <option value="슬라이더" title="좌우 부드러운 이동, 영화적 느낌">슬라이더</option>
+                                        <option value="스테디캠" title="걸으면서 안정적, 따라가기 샷">스테디캠</option>
+                                        <option value="짐벌" title="전자식 안정화, 부드러운 움직임">짐벌</option>
+                                    </optgroup>
+                                    <optgroup label="다이나믹 움직임">
+                                        <option value="핸드헬드" title="손으로 촬영, 다큐/현장감, 날것의 느낌">핸드헬드</option>
+                                        <option value="드론" title="하늘에서 촬영, 광활한 풍경, 버드뷰">드론</option>
+                                        <option value="크레인" title="위아래 큰 움직임, 광고/뮤비">크레인</option>
+                                        <option value="지미집" title="소형 크레인, 빠른 세팅">지미집</option>
+                                    </optgroup>
+                                    <optgroup label="특수 기법">
+                                        <option value="돌리줌" title="히치콕 효과, 긴장감 극대화">돌리줌</option>
+                                        <option value="타임랩스" title="시간 압축, 구름/별/도시 변화">타임랩스</option>
+                                        <option value="슬로우모션" title="고속 촬영, 디테일 강조">슬로우모션</option>
+                                        <option value="하이퍼랩스" title="이동 타임랩스, 도시 투어">하이퍼랩스</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="filmTone">필름 톤 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                <select id="filmTone" name="filmTone">
+                                    <option value="">직접 입력</option>
+                                    <optgroup label="인물 촬영">
+                                        <option value="Kodak Portra 400" title="웨딩/인물 최애, 파스텔 톤, 피부톤 완벽">Kodak Portra 400</option>
+                                        <option value="Kodak Portra 800" title="저조도 인물, 부드러운 그레인, 실내 웨딩">Kodak Portra 800</option>
+                                        <option value="Fujifilm Pro 400H" title="상업 인물, 차분한 톤, 패션/뷰티">Fujifilm Pro 400H</option>
+                                        <option value="Kodak Portra 160" title="스튜디오 인물, 세밀한 피부 톤">Kodak Portra 160</option>
+                                        <option value="Ilford HP5 Plus" title="흑백 인물, 클래식한 느낌, 부드러운 톤">Ilford HP5 Plus</option>
+                                    </optgroup>
+                                    <optgroup label="풍경 촬영">
+                                        <option value="Fuji Velvia 50" title="풍경의 전설, 극한 채도, 선명도, 자연">Fuji Velvia 50</option>
+                                        <option value="Kodak Ektar 100" title="풍경 최고, 선명하고 채도 높음, 디테일">Kodak Ektar 100</option>
+                                        <option value="Fujifilm Provia 100F" title="균형잡힌 색감, 자연스러운 풍경">Fujifilm Provia 100F</option>
+                                        <option value="Kodak Ektachrome" title="따뜻하고 정확한 색재현, 여행">Kodak Ektachrome</option>
+                                    </optgroup>
+                                    <optgroup label="스트리트/스냅">
+                                        <option value="Kodak Tri-X 400" title="스트리트 전설, 거친 그레인, 강렬한 대비">Kodak Tri-X 400</option>
+                                        <option value="Kodak Gold 200" title="따뜻한 일상, 노스탤지어, 스냅">Kodak Gold 200</option>
+                                        <option value="Fuji Superia 400" title="일상 촬영, 안정적, 여행 스냅">Fuji Superia 400</option>
+                                        <option value="Agfa Vista 400" title="유럽풍 색감, 따뜻하고 선명">Agfa Vista 400</option>
+                                        <option value="Lomography Color Negative 800" title="독특한 색감과 그레인, 로모 스타일">Lomography Color Negative 800</option>
+                                    </optgroup>
+                                    <optgroup label="야경/저조도">
+                                        <option value="CineStill 800T" title="야경 최애, 할레이션 효과, 네온 번짐">CineStill 800T</option>
+                                        <option value="Kodak Portra 800" title="저조도 인물, 실내 촬영, 파티">Kodak Portra 800</option>
+                                        <option value="Ilford Delta 3200" title="극한 저조도, 거친 느낌, 야경 흑백">Ilford Delta 3200</option>
+                                        <option value="Fuji Superia 1600" title="고감도 컬러, 밤 거리">Fuji Superia 1600</option>
+                                    </optgroup>
+                                    <optgroup label="스포츠/액션">
+                                        <option value="Ilford Delta 3200" title="고속 촬영, 빠른 셔터, 액션">Ilford Delta 3200</option>
+                                        <option value="Fuji Superia X-TRA 400" title="빠른 액션, 스포츠 이벤트">Fuji Superia X-TRA 400</option>
+                                        <option value="Kodak Vision3 500T" title="영화 액션, 시네마틱 스포츠">Kodak Vision3 500T</option>
+                                    </optgroup>
+                                    <optgroup label="매크로/디테일">
+                                        <option value="Kodak Ektar 100" title="초고해상도, 세밀한 디테일, 매크로">Kodak Ektar 100</option>
+                                        <option value="Fuji Velvia 50" title="극한 선명도, 매크로 자연">Fuji Velvia 50</option>
+                                        <option value="Fujifilm Provia 100F" title="정확한 색 재현, 제품 사진">Fujifilm Provia 100F</option>
+                                    </optgroup>
+                                    <optgroup label="영화/시네마">
+                                        <option value="ARRI LogC4" title="할리우드 표준, 가장 자연스러운 색감">ARRI LogC4</option>
+                                        <option value="RED IPP2" title="다이나믹하고 펀치있는 색감">RED IPP2</option>
+                                        <option value="Sony S-Log3" title="플랫한 프로파일, 후보정 여유">Sony S-Log3</option>
+                                        <option value="Kodak Vision3 500T" title="영화 필름 룩, 따뜻한 시네마">Kodak Vision3 500T</option>
+                                    </optgroup>
+                                    <optgroup label="실험적/아트">
+                                        <option value="Lomography Redscale" title="붉은 톤 효과, 실험적, 창의적">Lomography Redscale</option>
+                                        <option value="Lomography X-Pro 200" title="크로스 프로세싱, 독특한 색감">Lomography X-Pro 200</option>
+                                        <option value="Revolog Kolor" title="무지개 색상 효과, 아트">Revolog Kolor</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="colorGrading">색보정 스타일</label>
+                                <input type="text" id="colorGrading" name="colorGrading" placeholder="예: 시네마틱 틸-오렌지">
+                            </div>
+                            <div class="form-group">
+                                <label for="lightSource">광원 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                <select id="lightSource" name="lightSource">
+                                    <option value="">직접 입력</option>
+                                    <optgroup label="기본 조명">
+                                        <option value="Soft Lighting" title="부드럽고 균일한 조명, 그림자 최소화, 따뜻한 분위기">Soft Lighting (부드러운 조명)</option>
+                                        <option value="Hard Lighting" title="강한 직접 조명, 날카로운 그림자, 강렬한 대비">Hard Lighting (강한 조명)</option>
+                                        <option value="Backlighting" title="대상 뒤에서 비추어 헤일로 효과, 깊이감">Backlighting (역광)</option>
+                                        <option value="Key Lighting" title="주요 조명, 대상의 형태 정의">Key Lighting (키 라이팅)</option>
+                                        <option value="Fill Lighting" title="그림자를 부드럽게, 대비 감소">Fill Lighting (필 라이팅)</option>
+                                        <option value="High Key Lighting" title="밝고 균일, 최소 그림자, 쾌활한 분위기">High Key Lighting (하이 키)</option>
+                                        <option value="Low Key Lighting" title="강한 대비, 깊은 그림자, 긴장감/신비감">Low Key Lighting (로우 키)</option>
+                                        <option value="Diffused Light" title="부드럽고 고른 빛, 날카로운 그림자 없음">Diffused Light (확산광)</option>
+                                        <option value="Spotlight" title="특정 영역 집중 조명, 드라마틱">Spotlight (스포트라이트)</option>
+                                        <option value="Studio Light" title="완벽하게 제어 가능한 인공 조명">Studio Light (스튜디오 조명)</option>
+                                    </optgroup>
+                                    <optgroup label="고급 기법">
+                                        <option value="Rim Lighting" title="가장자리 밝게 비춤, 실루엣 강조">Rim Lighting (림 라이팅)</option>
+                                        <option value="Rembrandt Lighting" title="볼에 삼각형 하이라이트, 고전적/화가 같은 느낌">Rembrandt Lighting (렘브란트)</option>
+                                        <option value="Butterfly Lighting" title="코 아래 나비 모양 그림자, 독특한 효과">Butterfly Lighting (버터플라이)</option>
+                                        <option value="Cinematic Lighting" title="3포인트 조명, 영화적 분위기">Cinematic Lighting (시네마틱)</option>
+                                        <option value="Chiaroscuro" title="명암 대비로 양감/깊이감, 극적 효과">Chiaroscuro (키아로스쿠로)</option>
+                                        <option value="Volumetric Lighting" title="연기/먼지 통한 빛 산란, 입체감">Volumetric Lighting (볼류메트릭)</option>
+                                        <option value="Silhouette Lighting" title="밝은 배경에 어두운 실루엣, 신비로움">Silhouette Lighting (실루엣)</option>
+                                        <option value="Strobe Lighting" title="빠른 플래시, 동작 정지">Strobe Lighting (스트로브)</option>
+                                        <option value="Practical Lighting" title="장면 내 기존 조명 활용, 자연스러움">Practical Lighting (실용 조명)</option>
+                                        <option value="Colored Lighting" title="색상 필터로 분위기 연출, 색상 상징">Colored Lighting (컬러 조명)</option>
+                                        <option value="Pattern Light" title="창문/격자 등 패턴 그림자">Pattern Light (패턴 라이트)</option>
+                                        <option value="Lens Flare" title="강한 빛의 광학 효과, 드라마틱">Lens Flare (렌즈 플레어)</option>
+                                    </optgroup>
+                                    <optgroup label="자연광">
+                                        <option value="Golden Hour" title="일출/일몰 전후, 따뜻한 금빛">Golden Hour (골든 아워)</option>
+                                        <option value="Blue Hour" title="일출 전/일몰 후 1시간, 깊은 파란색">Blue Hour (블루 아워)</option>
+                                        <option value="Dawn Lighting" title="새벽, 부드럽고 차분한 조명">Dawn Lighting (새벽 조명)</option>
+                                        <option value="Sunset Lighting" title="일몰, 따뜻하고 극적인 조명">Sunset Lighting (일몰 조명)</option>
+                                        <option value="Dusk Lighting" title="황혼, 부드럽고 몽환적">Dusk Lighting (황혼 조명)</option>
+                                        <option value="Overcast Light" title="흐린 날, 균등한 확산광, 그림자 적음">Overcast Light (흐린 날)</option>
+                                        <option value="Window Light" title="창문 통한 자연광, 부드럽고 방향성">Window Light (창문 조명)</option>
+                                        <option value="Dappled Light" title="나뭇잎 사이 얼룩무늬, 로맨틱">Dappled Light (얼룩진 빛)</option>
+                                        <option value="Sunlight Shining Through" title="햇빛 투과, 그림자와 빛깔">Sunlight Through (투과광)</option>
+                                        <option value="Crepuscular Rays" title="구름 사이 광선, 신성하고 극적">Crepuscular Rays (천사의 사다리)</option>
+                                    </optgroup>
+                                    <optgroup label="특수 환경">
+                                        <option value="Moonlight" title="달빛, 은은하고 신비로운, 차가운 색온도">Moonlight (달빛)</option>
+                                        <option value="Midnight Lighting" title="자정, 낮은 조도, 극적이고 미스터리">Midnight (자정)</option>
+                                        <option value="Candlelight" title="촛불, 따뜻하고 부드러운, 로맨틱">Candlelight (촛불)</option>
+                                        <option value="Neon Light" title="네온사인, 강렬한 색상, 도시적">Neon Light (네온)</option>
+                                        <option value="Street Light" title="가로등, 오렌지/흰빛, 도시 밤">Street Light (가로등)</option>
+                                        <option value="Fluorescent" title="형광등, 차갑고 균등, 사무실">Fluorescent (형광등)</option>
+                                        <option value="Laser Lighting" title="레이저, 집중적이고 강렬, 클럽/콘서트">Laser Lighting (레이저)</option>
+                                        <option value="Twilight" title="황혼, 부드럽고 몽환적">Twilight (트와일라잇)</option>
+                                    </optgroup>
+                                    <optgroup label="전문 기법">
+                                        <option value="Soft Ambient Light" title="전체적으로 고른 환경 조명, 편안함">Soft Ambient (부드러운 주변광)</option>
+                                        <option value="Bounced Light" title="벽/반사판 반사, 부드럽고 고름">Bounced Light (반사광)</option>
+                                        <option value="Ambient Lighting" title="전체 기본 조명, 공간 균일">Ambient (주변 조명)</option>
+                                        <option value="Accent Lighting" title="특정 부분 강조, 포인트 조명">Accent Lighting (액센트)</option>
+                                        <option value="Softbox Lighting" title="소프트박스, 부드럽고 균등">Softbox (소프트박스)</option>
+                                        <option value="Flash Lights" title="순간 강한 빛, 어두운 환경">Flash (플래시)</option>
+                                        <option value="Long Exposure" title="장시간 노출, 빛의 궤적 포착">Long Exposure (장노출)</option>
+                                        <option value="Moody Lighting" title="감정 강조, 어둡고 극적">Moody (무디 조명)</option>
+                                        <option value="Beautiful Lighting" title="미적으로 이상적인 조명">Beautiful (아름다운 조명)</option>
+                                        <option value="Ethereal Lighting" title="초현실적, 꿈같은 분위기">Ethereal (몽환적)</option>
+                                        <option value="Contre-jour" title="역광으로 실루엣/후광 효과">Contre-jour (콩트루주르)</option>
+                                    </optgroup>
+                                    <optgroup label="인물 촬영 전용">
+                                        <option value="Portrait with Top Lighting" title="위에서 내려오는 조명, 극적인 그림자, 강인한 인상">Top Lighting (상단 조명)</option>
+                                        <option value="Portrait with Bottom Lighting" title="아래에서 올라오는 조명, 신비롭거나 위협적">Bottom Lighting (하단 조명)</option>
+                                        <option value="Portrait with Side Lighting" title="옆에서 비추는 조명, 입체감과 윤곽 강조">Side Lighting (측면 조명)</option>
+                                        <option value="Portrait with Back Lighting" title="뒤에서 비추는 역광, 후광 효과, 로맨틱">Back Lighting (역광 인물)</option>
+                                        <option value="Portrait with Sunlight" title="자연스러운 햇빛, 따뜻하고 생동감">Sunlight Portrait (햇빛 인물)</option>
+                                        <option value="Portrait with Window Blinds" title="블라인드 통과 빛, 패턴 그림자, 흥미로운 효과">Window Blinds (블라인드)</option>
+                                        <option value="Portrait with Red Light" title="빨간색 조명, 열정적이고 극적">Red Light Portrait (빨간 조명)</option>
+                                        <option value="Portrait with Peach & Cyan" title="복숭아-청록 조합, 영화적이고 모던">Peach & Cyan (영화적 색감)</option>
+                                        <option value="Portrait with Contrasty Lighting" title="강한 명암 대비, 강렬하고 드라마틱">Contrasty (대비 조명)</option>
+                                        <option value="Portrait with Hard Lighting" title="직접적이고 강한 조명, 날카로운 그림자">Hard Portrait (강한 조명)</option>
+                                        <option value="Portrait with Bright Lighting" title="매우 밝은 조명, 쾌활하고 긍정적">Bright Portrait (밝은 조명)</option>
+                                        <option value="Portrait with Natural Lighting" title="인공 조명 없이 자연광만, 자연스럽고 편안">Natural Portrait (자연 조명)</option>
+                                        <option value="Portrait with Mood Lighting" title="특정 감정 강조, 감성적인 인물">Mood Portrait (무드 조명)</option>
+                                        <option value="Portrait with Dramatic Lighting" title="강한 명암, 극적인 조명, 임팩트">Dramatic Portrait (극적 조명)</option>
+                                        <option value="Portrait Over Shoulder" title="어깨 너머 구도, 깊이감과 스토리텔링">Over Shoulder (어깨 너머)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeOfDay">시간대</label>
+                                <select id="timeOfDay" name="timeOfDay">
+                                    <option value="">직접 입력</option>
+                                    <option value="새벽">새벽</option>
+                                    <option value="아침">아침</option>
+                                    <option value="정오">정오</option>
+                                    <option value="오후">오후</option>
+                                    <option value="황혼">황혼</option>
+                                    <option value="석양">석양</option>
+                                    <option value="밤">밤</option>
+                                    <option value="한밤중">한밤중</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. 환경 & 배경 -->
+                    <section class="form-section">
+                        <h3>2. 환경 & 배경 설정</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="location">장소</label>
+                                <input type="text" id="location" name="location" placeholder="예: 외부, 도시 거리">
+                            </div>
+                            <div class="form-group">
+                                <label for="terrain">지형</label>
+                                <input type="text" id="terrain" name="terrain" placeholder="예: 현대적인 건물들">
+                            </div>
+                            <div class="form-group">
+                                <label for="weather">날씨</label>
+                                <input type="text" id="weather" name="weather" placeholder="예: 맑음">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="features">특징적 요소</label>
+                                <input type="text" id="features" name="features" placeholder="예: 네온 간판, 버려진 차량들">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="mood">분위기</label>
+                                <input type="text" id="mood" name="mood" placeholder="예: 황량하고 적막한">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. 캐릭터 & 의상 -->
+                    <section class="form-section">
+                        <h3>3. 캐릭터 & 의상</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="charDescription">캐릭터 설명</label>
+                                <input type="text" id="charDescription" name="charDescription" placeholder="예: 30대 남성 구조대원">
+                            </div>
+                            <div class="form-group">
+                                <label for="charRole">역할</label>
+                                <input type="text" id="charRole" name="charRole" placeholder="예: 생존자, 탐험가">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="costumeHead">헤드/얼굴</label>
+                                <textarea id="costumeHead" name="costumeHead" rows="2" placeholder="예: 전면 오렌지색 호흡기 헬멧"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="costumeTop">상의</label>
+                                <textarea id="costumeTop" name="costumeTop" rows="2" placeholder="예: 오렌지색 구조복 재킷"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="costumeAccessories">액세서리/장비</label>
+                                <textarea id="costumeAccessories" name="costumeAccessories" rows="2" placeholder="예: 검은색 전술 배낭"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. 장면 구성 -->
+                    <section class="form-section">
+                        <h3>4. 장면 구성</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="duration">총 길이</label>
+                                <input type="text" id="duration" name="duration" placeholder="예: 15초">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="startingSituation">시작 상황</label>
+                                <textarea id="startingSituation" name="startingSituation" rows="2" placeholder="예: 모래폭풍이 수평선에서 전진하며 바람이 포효하기 시작"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="shotsContainer">
+                            <h4>샷 구성 <button type="button" class="btn-small" onclick="addShot()">+ 샷 추가</button></h4>
+                            <div class="shot-item" data-shot="0">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>타임코드</label>
+                                        <input type="text" name="shot_timecode_0" placeholder="예: 0-5초">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>샷 타입 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                        <select name="shot_type_0">
+                                            <option value="">직접 입력</option>
+                                            <optgroup label="거리별 샷">
+                                                <option value="Extreme Wide Shot" title="광활한 풍경, 환경 강조">Extreme Wide Shot (EWS)</option>
+                                                <option value="Wide Shot" title="전신, 환경과 인물 모두">Wide Shot (WS)</option>
+                                                <option value="Full Shot" title="머리부터 발끝까지">Full Shot</option>
+                                                <option value="Medium Shot" title="허리 위, 대화 장면">Medium Shot (MS)</option>
+                                                <option value="Medium Close-Up" title="가슴 위, 표정과 몸짓">Medium Close-Up (MCU)</option>
+                                                <option value="Close-Up" title="얼굴 위주, 감정 강조">Close-Up (CU)</option>
+                                                <option value="Extreme Close-Up" title="눈/입 등 디테일, 극적">Extreme Close-Up (ECU)</option>
+                                            </optgroup>
+                                            <optgroup label="구도별">
+                                                <option value="Over the Shoulder" title="어깨 너머, 대화 장면">Over the Shoulder</option>
+                                                <option value="Point of View" title="1인칭 시점, 주인공 눈">POV (1인칭)</option>
+                                                <option value="Two Shot" title="두 명 함께, 관계 표현">Two Shot</option>
+                                                <option value="Cowboy Shot" title="허벅지 위, 서부극 스타일">Cowboy Shot</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>카메라 앵글 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                        <select name="shot_angle_0">
+                                            <option value="">직접 입력</option>
+                                            <optgroup label="높이별">
+                                                <option value="Eye Level" title="눈높이, 자연스럽고 중립적">Eye Level (눈높이)</option>
+                                                <option value="High Angle" title="위에서 아래로, 대상을 약하게">High Angle (하이 앵글)</option>
+                                                <option value="Low Angle" title="아래에서 위로, 대상을 강하게">Low Angle (로우 앵글)</option>
+                                                <option value="Bird's Eye View" title="수직으로, 전체 조망">Bird's Eye (버드아이)</option>
+                                                <option value="Worm's Eye View" title="바닥에서 위로, 극단적">Worm's Eye (웜즈아이)</option>
+                                                <option value="Overhead" title="위에서 내려다봄">Overhead (오버헤드)</option>
+                                            </optgroup>
+                                            <optgroup label="특수">
+                                                <option value="Dutch Angle" title="기울어진 카메라, 불안감">Dutch Angle (더치)</option>
+                                                <option value="Profile" title="옆모습, 윤곽 강조">Profile (프로필)</option>
+                                                <option value="Aerial" title="공중에서, 드론/헬기">Aerial (공중)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>카메라 움직임 <span class="label-hint">호버하면 설명이 나타납니다</span></label>
+                                        <select name="shot_movement_0">
+                                            <option value="">직접 입력</option>
+                                            <optgroup label="기본">
+                                                <option value="Static" title="정적, 고정된 샷">Static (정지)</option>
+                                                <option value="Pan" title="좌우로 회전">Pan (팬)</option>
+                                                <option value="Tilt" title="위아래로 회전">Tilt (틸트)</option>
+                                                <option value="Zoom In" title="줌 인, 집중">Zoom In</option>
+                                                <option value="Zoom Out" title="줌 아웃, 전체">Zoom Out</option>
+                                                <option value="Dolly In" title="카메라 전진">Dolly In</option>
+                                                <option value="Dolly Out" title="카메라 후진">Dolly Out</option>
+                                            </optgroup>
+                                            <optgroup label="복합">
+                                                <option value="Tracking" title="대상 따라 이동">Tracking (트래킹)</option>
+                                                <option value="Crane" title="크레인 상하">Crane (크레인)</option>
+                                                <option value="Steadicam" title="부드럽게 따라가기">Steadicam</option>
+                                                <option value="Handheld" title="손으로, 현장감">Handheld</option>
+                                                <option value="Gimbal" title="전자 안정화">Gimbal (짐벌)</option>
+                                                <option value="Drone" title="드론 공중">Drone (드론)</option>
+                                            </optgroup>
+                                            <optgroup label="특수">
+                                                <option value="Dolly Zoom" title="버티고 효과">Dolly Zoom (버티고)</option>
+                                                <option value="Whip Pan" title="빠른 팬 전환">Whip Pan</option>
+                                                <option value="Orbit" title="원형 회전">Orbit (오빗)</option>
+                                                <option value="Push In" title="천천히 전진">Push In</option>
+                                                <option value="Follow" title="인물 따라가기">Follow</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label>액션</label>
+                                        <textarea name="shot_action_0" rows="2" placeholder="캐릭터의 동작 설명"></textarea>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label>시각적 디테일</label>
+                                        <textarea name="shot_details_0" rows="2" placeholder="시각적 요소 설명"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. 사운드 디자인 -->
+                    <section class="form-section">
+                        <h3>5. 사운드 디자인</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="soundAmbient">환경음 (쉼표로 구분)</label>
+                                <textarea id="soundAmbient" name="soundAmbient" rows="2" placeholder="예: 포효하는 바람, 모래 부딪히는 소리"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="soundCharacter">캐릭터 사운드 (쉼표로 구분)</label>
+                                <textarea id="soundCharacter" name="soundCharacter" rows="2" placeholder="예: 호흡 소리, 발걸음 소리"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="soundMusic">음악</label>
+                                <input type="text" id="soundMusic" name="soundMusic" placeholder="예: 미니멀한 앰비언트 드론">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 6. 특수 지시사항 -->
+                    <section class="form-section">
+                        <h3>6. 특수 지시사항</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="instructionsMust">필수 준수사항 (쉼표로 구분)</label>
+                                <textarea id="instructionsMust" name="instructionsMust" rows="2" placeholder="예: 조명 정확히 매칭, 의상 디테일 재현"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="instructionsEmphasize">강조할 요소 (쉼표로 구분)</label>
+                                <textarea id="instructionsEmphasize" name="instructionsEmphasize" rows="2" placeholder="예: 헬멧 바이저의 결로, 모래 입자 효과"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="instructionsAvoid">피해야 할 요소 (쉼표로 구분)</label>
+                                <textarea id="instructionsAvoid" name="instructionsAvoid" rows="2" placeholder="예: 과도한 CGI, 너무 깨끗한 의상"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 생성 버튼 -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">프롬프트 생성</button>
+                        <button type="reset" class="btn-secondary">초기화</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 프롬프트 미리보기 -->
+            <div class="preview-container">
+                <h2>생성된 프롬프트</h2>
+                <div class="preview-actions">
+                    <button class="btn-small" onclick="copyPrompt()">복사</button>
+                    <button class="btn-small" onclick="downloadPrompt()">다운로드</button>
+                </div>
+                <pre id="promptPreview" class="prompt-preview">프롬프트가 여기에 표시됩니다...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{
+  "name": "시네마틱 기본 템플릿",
+  "description": "영화적인 분위기의 기본 프리셋",
+  "technicalSpecs": {
+    "shootingFormat": "실사",
+    "camera": "ARRI ALEXA 65",
+    "lens": "85mm",
+    "technique": "스테디캠",
+    "filmTone": "ARRI LogC4",
+    "colorGrading": "시네마틱 틸-오렌지",
+    "specialEffects": "자연스러운 lens flare",
+    "lightSource": "따뜻한 자연광",
+    "timeOfDay": "황혼",
+    "primaryColor": "주황-노랑 (따뜻함)",
+    "secondaryColor": "청록-파랑 (차가움)"
+  },
+  "environment": {
+    "location": "외부, 도시 거리",
+    "terrain": "현대적인 건물들",
+    "weather": "맑음",
+    "time": "석양 무렵",
+    "features": "도시의 건물과 거리",
+    "mood": "서정적이고 따뜻한"
+  },
+  "character": {
+    "description": "30대 주인공",
+    "role": "주요 캐릭터",
+    "costume": {
+      "head": "",
+      "top": "캐주얼 재킷",
+      "accessories": "",
+      "bottom": "청바지",
+      "shoes": "스니커즈"
+    }
+  },
+  "scenes": {
+    "overview": {
+      "duration": "15초",
+      "startingSituation": "캐릭터가 거리를 걷고 있음",
+      "cameraMovement": "캐릭터를 따라가며 촬영"
+    },
+    "shots": [
+      {
+        "timecode": "0-5초",
+        "type": "Wide Shot",
+        "angle": "Eye Level",
+        "movement": "Dolly Forward",
+        "composition": "Rule of Thirds",
+        "action": "캐릭터가 카메라를 향해 걸어옴",
+        "visualDetails": "석양빛이 건물에 반사됨",
+        "mood": "평온하고 서정적"
+      },
+      {
+        "timecode": "5-10초",
+        "type": "Medium Shot",
+        "angle": "Eye Level",
+        "movement": "Tracking",
+        "composition": "중앙 배치",
+        "action": "캐릭터의 걸음걸이 클로즈업",
+        "visualDetails": "옷에 비치는 석양빛",
+        "mood": "따뜻함"
+      },
+      {
+        "timecode": "10-15초",
+        "type": "Close-up",
+        "angle": "Slightly Low",
+        "movement": "Static",
+        "composition": "중앙",
+        "action": "캐릭터의 표정",
+        "visualDetails": "눈동자에 반사되는 빛",
+        "mood": "감성적"
+      }
+    ]
+  },
+  "sound": {
+    "ambient": [
+      "도시의 배경 소음",
+      "바람 소리",
+      "먼 교통 소리"
+    ],
+    "character": [
+      "발걸음 소리"
+    ],
+    "mechanical": [],
+    "music": "부드러운 앰비언트 음악"
+  },
+  "dialogue": {
+    "lines": []
+  },
+  "specialInstructions": {
+    "must": [
+      "시네마틱 색보정 유지",
+      "자연스러운 조명"
+    ],
+    "emphasize": [
+      "석양의 따뜻한 색감",
+      "캐릭터의 감정 표현"
+    ],
+    "avoid": [
+      "과도한 특수효과",
+      "부자연스러운 조명"
+    ]
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "name": "사이버펑크 템플릿",
+  "description": "네온과 미래적 분위기의 사이버펑크 스타일",
+  "technicalSpecs": {
+    "shootingFormat": "실사",
+    "camera": "Sony FX6",
+    "lens": "35mm",
+    "technique": "스테디캠, 드론",
+    "filmTone": "Sony S-Log3",
+    "colorGrading": "네오-누아르, 네온 강조",
+    "specialEffects": "네온 light bloom, 홀로그램 효과",
+    "lightSource": "네온 사인, 형광등",
+    "timeOfDay": "깊은 밤",
+    "primaryColor": "사이버 핑크-퍼플",
+    "secondaryColor": "청록-블루"
+  },
+  "environment": {
+    "location": "외부, 사이버펑크 도시",
+    "terrain": "고층 빌딩, 좁은 골목",
+    "weather": "비 또는 안개",
+    "time": "밤",
+    "features": "네온 간판, 홀로그램 광고, 젖은 아스팔트",
+    "mood": "미래적이고 퇴폐적"
+  },
+  "character": {
+    "description": "20대 사이버펑크 스타일 캐릭터",
+    "role": "해커 또는 러너",
+    "costume": {
+      "head": "증강현실 안경 또는 바이저",
+      "top": "네온 라인이 들어간 재킷",
+      "accessories": "사이버네틱 임플란트, LED 액세서리",
+      "bottom": "테크웨어 바지",
+      "shoes": "미래형 부츠"
+    }
+  },
+  "scenes": {
+    "overview": {
+      "duration": "15초",
+      "startingSituation": "네온 거리를 걷는 캐릭터",
+      "cameraMovement": "부드럽게 따라가며 도시의 분위기 포착"
+    },
+    "shots": [
+      {
+        "timecode": "0-5초",
+        "type": "Wide Shot",
+        "angle": "High Angle",
+        "movement": "Slow Drone Descent",
+        "composition": "대칭",
+        "action": "캐릭터가 네온 거리로 들어섬",
+        "visualDetails": "수많은 네온 사인, 빗물 반사",
+        "mood": "압도적이고 몽환적"
+      },
+      {
+        "timecode": "5-10초",
+        "type": "Medium Shot",
+        "angle": "Eye Level",
+        "movement": "Smooth Tracking",
+        "composition": "Rule of Thirds",
+        "action": "캐릭터가 걸으며 주변을 관찰",
+        "visualDetails": "네온빛이 얼굴에 반사, AR 인터페이스",
+        "mood": "신비롭고 테크놀로지적"
+      },
+      {
+        "timecode": "10-15초",
+        "type": "Close-up",
+        "angle": "Eye Level",
+        "movement": "Static",
+        "composition": "중앙",
+        "action": "AR 안경에 정보가 표시됨",
+        "visualDetails": "눈동자 클로즈업, 홀로그램 반사",
+        "mood": "집중, 미래적"
+      }
+    ]
+  },
+  "sound": {
+    "ambient": [
+      "네온 사인 윙윙거림",
+      "빗소리",
+      "먼 교통 소리",
+      "전자 소음"
+    ],
+    "character": [
+      "발걸음 소리 (물 튀김)",
+      "전자 장비 소리"
+    ],
+    "mechanical": [
+      "드론 소리",
+      "홀로그램 인터페이스 소리",
+      "사이버네틱 작동음"
+    ],
+    "music": "신스웨이브, 다크 일렉트로닉"
+  },
+  "dialogue": {
+    "lines": []
+  },
+  "specialInstructions": {
+    "must": [
+      "네온 색감 강조",
+      "비 또는 안개로 분위기 연출",
+      "홀로그램/AR 요소 포함"
+    ],
+    "emphasize": [
+      "사이버펑크 미학",
+      "네온 반사 효과",
+      "미래적 기술 요소"
+    ],
+    "avoid": [
+      "밝은 자연광",
+      "따뜻한 색감",
+      "현대적/과거적 요소"
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "appName": "Sora Video Prompt Generator",
+  "version": "1.0.0",
+  "defaultTemplate": "cinematic-template",
+  "maxShotCount": 10,
+  "supportedFormats": {
+    "shooting": ["실사", "애니메이션", "하이브리드"],
+    "export": ["txt", "md", "json"]
+  },
+  "presetCameras": [
+    "ARRI ALEXA 65",
+    "ARRI ALEXA Mini",
+    "RED Komodo 6K",
+    "Sony FX6",
+    "Canon C300 Mark III"
+  ],
+  "presetLenses": [
+    "24mm 광각",
+    "35mm",
+    "50mm 표준",
+    "85mm",
+    "100mm 망원"
+  ],
+  "shotTypes": [
+    "Extreme Wide Shot",
+    "Wide Shot",
+    "Medium Shot",
+    "Medium Close-up",
+    "Close-up",
+    "Extreme Close-up"
+  ],
+  "cameraAngles": [
+    "Eye Level",
+    "High Angle",
+    "Low Angle",
+    "Dutch Angle",
+    "Bird's Eye",
+    "Worm's Eye"
+  ],
+  "cameraMovements": [
+    "Static",
+    "Pan",
+    "Tilt",
+    "Dolly In",
+    "Dolly Out",
+    "Tracking",
+    "Crane",
+    "Steadicam",
+    "Handheld"
+  ]
+}
