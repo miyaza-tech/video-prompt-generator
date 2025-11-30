@@ -1,6 +1,7 @@
 // 전역 변수
 let shotCounter = 1;
 let currentPrompt = '';
+let currentPromptData = null;
 let isAnalyzing = false;
 
 // 촬영 컨셉 프리셋 데이터
@@ -477,6 +478,7 @@ async function generatePrompt() {
 
         if (result.success) {
             currentPrompt = result.prompt;
+            currentPromptData = data; // JSON 형식 데이터 저장
             document.getElementById('promptPreview').textContent = currentPrompt;
         } else {
             alert('프롬프트 생성에 실패했습니다: ' + result.error);
@@ -531,4 +533,37 @@ function downloadPrompt() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+/**
+ * JSON 형식으로 다운로드
+ */
+function downloadJSON() {
+    if (!currentPromptData) {
+        alert('다운로드할 프롬프트 데이터가 없습니다.');
+        return;
+    }
+
+    // 텍스트 프롬프트도 JSON에 포함
+    const jsonData = {
+        textPrompt: currentPrompt,
+        structuredData: currentPromptData,
+        metadata: {
+            generatedAt: new Date().toISOString(),
+            version: '1.0',
+            generator: 'Sora Video Prompt Generator'
+        }
+    };
+
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sora-prompt-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showNotification('JSON 파일이 다운로드되었습니다!');
 }
